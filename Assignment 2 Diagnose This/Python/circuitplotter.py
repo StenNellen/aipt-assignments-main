@@ -55,32 +55,6 @@ def plot_circuit_1():
     webbrowser.open('.circuit.svg')
 
 
-
-def plot_circuit_8():
-    with schemdraw.Drawing(file='.circuit.svg', show=False) as d:
-        # Components
-        a1 = d.add(logic.And(inputs=2).label('A1').at((0,0.25)))
-        o1 = d.add(logic.Or(inputs=2).label('O1').at((4,0)))
-        a2 = d.add(logic.And(inputs=2).label('A2').at((4,-2)))
-        o2 = d.add(logic.Or(inputs=2).label('O2').at((8,-1)))
-        
-        # Behaviour connections (manual wiring)
-        d.add(elm.Line().at(a1.out).to(o1.in1))
-        d.add(elm.Line().at(a1.out).to(a2.in1))
-        d.add(elm.Line().at(o1.out).to(o2.in1))
-        d.add(elm.Line().at(a2.out).to(o2.in2))
-
-        # Inputs annotations (labels near inputs)
-        d.add(elm.Dot().at(a1.in1).label('1', loc='left'))
-        d.add(elm.Dot().at(a1.in2).label('0', loc='left'))
-        d.add(elm.Dot().at(o1.in2).label('0', loc='left'))
-        d.add(elm.Dot().at(a2.in2).label('1', loc='left'))
-        
-        # Output observations
-        d.add(elm.Dot().at(o2.out).label('0', loc='right'))
-
-    webbrowser.open('.circuit.svg')
-
 def plot_circuit_2():
     with schemdraw.Drawing(file='.circuit.svg', show=False) as d:
         # Components (4 XORs)
@@ -271,5 +245,31 @@ def plot_circuit_7():
         d.add(elm.Dot().at(o3.out).label('0', loc='right'))
         d.add(elm.Dot().at(o4.out).label('1', loc='right'))
         d.add(elm.Dot().at(o5.out).label('0', loc='right'))
+
+    webbrowser.open('.circuit.svg')
+
+
+def plot_circuit_8():
+    with schemdraw.Drawing(file='.circuit.svg', show=False) as d:
+        # Components
+        a1 = d.add(logic.And(inputs=2).label('A1').at((0,0.25)))
+        o1 = d.add(logic.Or(inputs=2).label('O1').at((4,0)))
+        a2 = d.add(logic.And(inputs=2).label('A2').at((4,-2)))
+        o2 = d.add(logic.Or(inputs=2).label('O2').at((8,-1)))
+        
+        # Behaviour connections (manual wiring)
+        d.add(elm.Line().at(a1.out).to(o1.in1))
+        d.add(elm.Line().at(a1.out).to(a2.in1))
+        d.add(elm.Line().at(o1.out).to(o2.in1))
+        d.add(elm.Line().at(a2.out).to(o2.in2))
+
+        # Inputs annotations (labels near inputs)
+        d.add(elm.Dot().at(a1.in1).label('1', loc='left'))
+        d.add(elm.Dot().at(a1.in2).label('0', loc='left'))
+        d.add(elm.Dot().at(o1.in2).label('0', loc='left'))
+        d.add(elm.Dot().at(a2.in2).label('1', loc='left'))
+        
+        # Output observations
+        d.add(elm.Dot().at(o2.out).label('0', loc='right'))
 
     webbrowser.open('.circuit.svg')

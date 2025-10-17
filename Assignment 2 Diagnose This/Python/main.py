@@ -6,9 +6,9 @@ from os.path import join
 
 if __name__ == '__main__':
 
-    document = "circuit8.txt"
+    document = "circuit1.txt"
 
-    game = True
+    game = False
 
     # It only makes sense to play the game if you have the hitting set algorithm implemented.
     if game:
