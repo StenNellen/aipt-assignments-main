@@ -4,6 +4,7 @@ from conflictsets import ConflictSetRetriever
 from os.path import join
 from statistics import mean
 
+# Helper function to print evaluation summary
 def print_evaluation_summary(results, num_documents):
     """Prints a formatted summary of the heuristic performances."""
     
@@ -29,8 +30,8 @@ def print_evaluation_summary(results, num_documents):
 
     print("\n--- End of Evaluation ---")
 
-
-def run_advanced_evaluation(document_paths, heuristics_to_test):
+# Advanced evaluation function
+def run_evaluation(document_paths, heuristics_to_test):
     """
     Runs the hitting set algorithm for multiple documents and heuristics,
     then prints a summary of the performance.
@@ -82,4 +83,4 @@ if __name__ == '__main__':
     ]
 
     # Run the advanced evaluation
-    run_advanced_evaluation([join("circuits", doc) for doc in documents], heuristics_to_compare)
+    run_evaluation([join("circuits", doc) for doc in documents], heuristics_to_compare)

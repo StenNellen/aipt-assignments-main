@@ -10,7 +10,6 @@ if __name__ == '__main__':
 
     game = False
 
-    # It only makes sense to play the game if you have the hitting set algorithm implemented.
     if game:
         # If you play the game, choose conflict sets, compute hitting sets:
         plot_circuit(document)

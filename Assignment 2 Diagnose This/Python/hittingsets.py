@@ -41,7 +41,7 @@ def run_hitting_set_algorithm(conflict_sets, heuristic=shortest_conflict_set_heu
     # Once the tree is fully expanded, collect the hitting sets.
     hitting_sets = root.get_hitting_sets()
 
-    # Placeholder for minimality logic. For now, we return all hitting sets found.
+    # Minimize the hitting sets
     minimal_hitting_sets = minimize_hitting_sets(hitting_sets)
 
     return hitting_sets, minimal_hitting_sets
