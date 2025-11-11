@@ -5,7 +5,11 @@ from os.path import join
 from statistics import mean, median
 
 <<<<<<< Updated upstream
+<<<<<<< Updated upstream
 # Helper function to print evaluation summary
+=======
+
+>>>>>>> Stashed changes
 =======
 
 >>>>>>> Stashed changes
