@@ -1,6 +1,3 @@
-from collections import Counter
-
-
 def shortest_conflict_set_heuristic(conflict_sets):
     """
     Heuristic: Choose the conflict set with the shortest length.
@@ -26,5 +23,23 @@ def first_conflict_set_heuristic(conflict_sets):
     return conflict_sets[0]
 
 def most_common_set_heuristic(conflict_sets):
-    counter = Counter(item for setthingy in conflict_sets for item in setthingy)
-    return counter.most_common(1)[0][0]
+    """
+    Heuristic: Choose the conflict set with the most common element in the conflict sets.
+    """
+    counter = {}
+    for setthing in conflict_sets:
+        for item in setthing:
+            counter[item] = counter.get(item, 0) + 1
+    
+
+    sorted_dict = dict(sorted(counter.items(), key=lambda item: item[1], reverse=True))
+    for setthingy in conflict_sets:
+        if list(sorted_dict.keys())[0] in setthingy:
+            return setthingy
+
+
+
+if __name__ == "__main__":
+    setty = [['X2', 'X1'], ['O1', 'X1', 'A2']]
+    print(first_conflict_set_heuristic(setty))
+    print((most_common_set_heuristic(setty)))

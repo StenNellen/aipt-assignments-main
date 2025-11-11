@@ -87,7 +87,7 @@ class HittingNode:
     _nodes_created = 0
 
     def __init__(self, conflict_set: list[list], conflict_sets_left: list[list], parent=None):
-        self.parent: HittingNode = parent
+        self.parent: HittingNode | None = parent
         self.conflict_sets_left: list[list] = conflict_sets_left
         self.conflict_set: list = conflict_set
         self.children: dict[any, HittingNode | None] = {c:None for c in conflict_set} if conflict_set else {}

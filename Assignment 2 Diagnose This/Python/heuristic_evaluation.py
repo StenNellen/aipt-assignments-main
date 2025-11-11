@@ -4,15 +4,7 @@ from conflictsets import ConflictSetRetriever
 from os.path import join
 from statistics import mean, median
 
-<<<<<<< Updated upstream
-<<<<<<< Updated upstream
-# Helper function to print evaluation summary
-=======
 
->>>>>>> Stashed changes
-=======
-
->>>>>>> Stashed changes
 def print_evaluation_summary(results, num_documents):
     """Prints a formatted summary of the heuristic performances."""
     
@@ -82,7 +74,7 @@ def run_evaluation(document_paths, heuristics_to_test):
 
 if __name__ == '__main__':
     # List of documents to evaluate
-    documents = ["circuit1.txt", "circuit2.txt", "circuit3.txt", "circuit4.txt", "circuit5.txt", "circuit6.txt", "circuit7.txt"]
+    documents = ["circuit1.txt", "circuit2.txt", "circuit3.txt", "circuit4.txt", "circuit5.txt", "circuit6.txt", "circuit7.txt", "circuit8.txt"]
 
     # List of heuristics to compare
     heuristics_to_compare = [
