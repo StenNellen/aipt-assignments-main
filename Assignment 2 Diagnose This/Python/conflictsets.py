@@ -15,7 +15,7 @@ class ConflictSetRetriever:
         :param document_path: path to the circuit file.
         """
         self.document_path = document_path
-        self.document = self.open_document()
+        self.document = self.read_document()
         self.validate_file()
 
         self.in_variables = self.extract_in_observations()
@@ -25,7 +25,7 @@ class ConflictSetRetriever:
         self.observations = self.extract_observations()
 
 
-    def open_document(self) -> str:
+    def read_document(self) -> str:
         """
         Opens document and returns as a string
 

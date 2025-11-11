@@ -1,7 +1,7 @@
 from heuristics import shortest_conflict_set_heuristic, first_conflict_set_heuristic, longest_conflict_set_heuristic
 
 # Main hitting set algorithm
-def run_hitting_set_algorithm(conflict_sets, heuristic=shortest_conflict_set_heuristic):
+def run_hitting_set_algorithm(conflict_sets, heuristic=shortest_conflict_set_heuristic) -> tuple[list, list]:
     """
     Algorithm that handles the entire process from conflict sets to hitting sets.
 
@@ -48,7 +48,7 @@ def run_hitting_set_algorithm(conflict_sets, heuristic=shortest_conflict_set_heu
 
 # Optimized algorithm to minimize hitting sets.
 # Instead of naively checking all subsets, we order the hitting sets by length only check new sets against the already confirmed minimal sets.
-def minimize_hitting_sets(hitting_sets):
+def minimize_hitting_sets(hitting_sets) -> list:
     """
     Function to minimize hitting sets.
 

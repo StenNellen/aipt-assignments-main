@@ -1,10 +1,14 @@
-from heuristics import shortest_conflict_set_heuristic, first_conflict_set_heuristic, longest_conflict_set_heuristic
+from heuristics import shortest_conflict_set_heuristic, first_conflict_set_heuristic, longest_conflict_set_heuristic, most_common_set_heuristic
 from hittingsets import run_hitting_set_algorithm, HittingNode
 from conflictsets import ConflictSetRetriever
 from os.path import join
 from statistics import mean, median
 
+<<<<<<< Updated upstream
 # Helper function to print evaluation summary
+=======
+
+>>>>>>> Stashed changes
 def print_evaluation_summary(results, num_documents):
     """Prints a formatted summary of the heuristic performances."""
     
@@ -80,7 +84,8 @@ if __name__ == '__main__':
     heuristics_to_compare = [
         shortest_conflict_set_heuristic,
         longest_conflict_set_heuristic,
-        first_conflict_set_heuristic
+        first_conflict_set_heuristic,
+        most_common_set_heuristic
     ]
 
     # Run the advanced evaluation
