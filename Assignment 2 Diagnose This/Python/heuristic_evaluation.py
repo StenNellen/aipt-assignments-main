@@ -2,7 +2,7 @@ from heuristics import shortest_conflict_set_heuristic, first_conflict_set_heuri
 from hittingsets import run_hitting_set_algorithm, HittingNode
 from conflictsets import ConflictSetRetriever
 from os.path import join
-from statistics import mean
+from statistics import mean, median
 
 # Helper function to print evaluation summary
 def print_evaluation_summary(results, num_documents):
@@ -16,6 +16,7 @@ def print_evaluation_summary(results, num_documents):
         print(f"Heuristic: '{name}'")
         print(f"  - Total Nodes Created: {sum(nodes):,}")
         print(f"  - Average Nodes Created: {mean(nodes):,.2f}")
+        print(f"  - Average Nodes Created: {median(nodes):,.2f}")
         print(f"  - Min/Max Nodes Created: {min(nodes):,}/{max(nodes):,}")
         print("-" * 20)
 
@@ -33,11 +34,11 @@ def print_evaluation_summary(results, num_documents):
 # Advanced evaluation function
 def run_evaluation(document_paths, heuristics_to_test):
     """
-    Runs the hitting set algorithm for multiple documents and heuristics,
+    Runs the hitting set algorithm for multiple circuits and heuristics,
     then prints a summary of the performance.
 
     Args:
-        document_paths (list[str]): List of paths to the document files.
+        document_paths (list[str]): List of paths to the circuit files.
         heuristics_to_test (list[callable]): List of heuristic functions to evaluate.
     """
     results = {}
