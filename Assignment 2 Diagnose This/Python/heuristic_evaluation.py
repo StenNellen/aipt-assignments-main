@@ -16,7 +16,7 @@ def print_evaluation_summary(results, num_documents):
         print(f"Heuristic: '{name}'")
         print(f"  - Total Nodes Created: {sum(nodes):,}")
         print(f"  - Average Nodes Created: {mean(nodes):,.2f}")
-        print(f"  - Average Nodes Created: {median(nodes):,.2f}")
+        print(f"  - Median Nodes Created: {median(nodes):,.2f}")
         print(f"  - Min/Max Nodes Created: {min(nodes):,}/{max(nodes):,}")
         print("-" * 20)
 
