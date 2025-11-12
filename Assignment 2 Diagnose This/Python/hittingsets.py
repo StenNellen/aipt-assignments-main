@@ -1,4 +1,4 @@
-from heuristics import shortest_conflict_set_heuristic, first_conflict_set_heuristic, longest_conflict_set_heuristic
+from heuristics import shortest_conflict_set_heuristic, first_conflict_set_heuristic, longest_conflict_set_heuristic, most_common_set_heuristic
 
 # Main hitting set algorithm
 def run_hitting_set_algorithm(conflict_sets, heuristic=shortest_conflict_set_heuristic) -> tuple[list, list]:
