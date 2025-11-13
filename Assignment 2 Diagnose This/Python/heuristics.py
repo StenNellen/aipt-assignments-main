@@ -14,13 +14,14 @@ def longest_conflict_set_heuristic(conflict_sets):
         return None
     return max(conflict_sets, key=len)
 
-def first_conflict_set_heuristic(conflict_sets):
+def middle_set_heuristic(conflict_sets):
     """
-    Heuristic: Choose the first conflict set in the list.
+    Heuristic: Choose the middle conflict set in the list.
     """
     if not conflict_sets:
         return None
-    return conflict_sets[0]
+    return conflict_sets[round((len(conflict_sets)-1)/2)]
+
 
 def most_common_set_heuristic(conflict_sets):
     """
@@ -41,5 +42,5 @@ def most_common_set_heuristic(conflict_sets):
 
 if __name__ == "__main__":
     setty = [['X2', 'X1'], ['O1', 'X1', 'A2']]
-    print(first_conflict_set_heuristic(setty))
+    print(middle_set_heuristic(setty))
     print((most_common_set_heuristic(setty)))

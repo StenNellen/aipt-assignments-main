@@ -1,4 +1,4 @@
-from heuristics import shortest_conflict_set_heuristic, first_conflict_set_heuristic, longest_conflict_set_heuristic, most_common_set_heuristic
+from heuristics import shortest_conflict_set_heuristic, middle_set_heuristic, longest_conflict_set_heuristic, most_common_set_heuristic
 from hittingsets import run_hitting_set_algorithm, HittingNode
 from conflictsets import ConflictSetRetriever
 from os.path import join
@@ -80,7 +80,7 @@ if __name__ == '__main__':
     heuristics_to_compare = [
         shortest_conflict_set_heuristic,
         longest_conflict_set_heuristic,
-        first_conflict_set_heuristic,
+        middle_set_heuristic,
         most_common_set_heuristic
     ]
 
