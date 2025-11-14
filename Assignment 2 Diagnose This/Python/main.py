@@ -6,9 +6,9 @@ from os.path import join
 
 if __name__ == '__main__':
 
-    document = "circuit1.txt"
+    document = "circuit8.txt"
 
-    game = False
+    game = True
 
     if game:
         # If you play the game, choose conflict sets, compute hitting sets:

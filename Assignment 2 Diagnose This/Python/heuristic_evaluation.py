@@ -74,7 +74,8 @@ def run_evaluation(document_paths, heuristics_to_test):
 
 if __name__ == '__main__':
     # List of documents to evaluate
-    documents = ["circuit1.txt", "circuit2.txt", "circuit3.txt", "circuit4.txt", "circuit5.txt", "circuit6.txt", "circuit7.txt", "circuit8.txt"]
+    documents = ["circuit1.txt", "circuit2.txt", "circuit3.txt", "circuit4.txt", 
+                 "circuit5.txt", "circuit6.txt", "circuit7.txt", "circuit8.txt"]
 
     # List of heuristics to compare
     heuristics_to_compare = [
