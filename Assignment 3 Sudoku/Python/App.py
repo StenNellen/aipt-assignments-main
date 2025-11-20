@@ -16,14 +16,16 @@ class App:
         else:
             print("Could not solve this sudoku :(")
 
+
     @staticmethod
     def start():
         while True:
-            file_num = input("Enter Sudoku file (1-5): ")
+            file_num = input("Enter Sudoku file (1-6): ")
             print("\n")
 
             file = None
             for filename in os.listdir(sudoku_folder):
+                # if "solved" in filename:
                 if file_num in filename:
                     file = filename
             if file is not None:
