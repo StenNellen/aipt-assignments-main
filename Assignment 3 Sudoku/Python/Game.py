@@ -1,7 +1,7 @@
 from Field import Field
 from Arc import Arc
-import heapq
 import Sudoku
+from queue import PriorityQueue
 
 class Game:
 
@@ -11,28 +11,43 @@ class Game:
     def show_sudoku(self):
         print(self.sudoku)
 
-    @staticmethod
-    def heuristics_first(arcs: list[Arc], left: Field) -> tuple[int, Arc]:
-        for i in range(0, len(arcs), -1):
-            if arcs[i].left == left:
-                return (i, arcs[i])
+    def heuristics_first(self, arcs: list[Arc], left: Field = None) -> list[tuple[int, Arc]] | tuple[int, Arc]:
+        if left == None:
+            self.first_counter = len(arcs) - 1
+            return list(enumerate(arcs))
+        for arc in arcs:
+            if arc.left == left:
+                self.first_counter += 1
+                return (self.first_counter, arc)
         return None
 
-    def solve(self, heuristic: callable = heuristics_first) -> bool:
+    def solve(self, heuristic: callable = None) -> bool:
         """
         Implementation of the AC-3 algorithm
         @return: true if the constraints can be satisfied, false otherwise
         """
+        # Default heuristic
+        if heuristic == None: heuristic = self.heuristics_first
 
+        # Define empty queue
+        agenda = PriorityQueue()
+
+        # Get all arcs and fill the agenda
         arcs: list[Arc] = self.get_constraint_arcs()
-        arced_agenda = arcs.copy()
-        agenda = []
-        for arc in arcs:
-            prior = heuristic(arced_agenda, arc.left)
-            arced_agenda.remove(prior[1])
-            agenda.append(prior)
+        priority_arc_items = heuristic(arcs)
+        for arc in priority_arc_items:
+            agenda.put(arc)
         
-        print(agenda)
+        # Main algorithm loop
+        while True:
+            # Get the next arc on the agenda
+            _, arc = agenda.get()
+
+            # TODO AC-3
+
+            # Algorithm done if the queue (agenda) is empty
+            if agenda.empty():
+                break
         
         
         
@@ -52,7 +67,7 @@ class Game:
                 for neighbour in field.neighbours:
                     neighbour: Field
                     arcs.append(Arc(field, neighbour))
-        return
+        return arcs
 
     def valid_solution(self) -> bool:
         """
@@ -70,10 +85,3 @@ class Game:
                         return False
                 
         return True
-
-
-if __name__ == "__main__":
-    gam = Game(Sudoku(sudoku_file))
-    arcs = gam.get_constraint_arcs()
-    print(arcs)
-    gam.solve()
