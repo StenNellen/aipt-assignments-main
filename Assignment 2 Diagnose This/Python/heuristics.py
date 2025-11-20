@@ -22,7 +22,6 @@ def middle_set_heuristic(conflict_sets):
         return None
     return conflict_sets[round((len(conflict_sets)-1)/2)]
 
-
 def most_common_set_heuristic(conflict_sets):
     """
     Heuristic: Choose the conflict set with the most common element in the conflict sets.
@@ -37,10 +36,3 @@ def most_common_set_heuristic(conflict_sets):
     for setthingy in conflict_sets:
         if list(sorted_dict.keys())[0] in setthingy:
             return setthingy
-
-
-
-if __name__ == "__main__":
-    setty = [['X2', 'X1'], ['O1', 'X1', 'A2']]
-    print(middle_set_heuristic(setty))
-    print((most_common_set_heuristic(setty)))
