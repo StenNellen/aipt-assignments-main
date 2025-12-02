@@ -11,15 +11,22 @@ class Game:
     def show_sudoku(self):
         print(self.sudoku)
 
-    def heuristics_first(self, arcs: list[Arc], left: Field = None) -> list[tuple[int, Arc]] | tuple[int, Arc]:
-        if left == None:
+    def heuristics_first(self, arcs: list[Arc], find: Field = None) -> list[tuple[int, Arc]] | tuple[int, Arc]:
+        """
+        Simple heuristic that prioritizes arcs based on the left field's number of possible values
+        @param arcs: list of arcs to prioritize
+        @param left: if provided, only return the next arc with this left field
+        @return: list of prioritized arcs or the next arc with the given left field
+        """
+        if find == None:
             self.first_counter = len(arcs) - 1
             return list(enumerate(arcs))
+        arc_list = []
         for arc in arcs:
-            if arc.left == left:
+            if arc.right == find:
                 self.first_counter += 1
-                return (self.first_counter, arc)
-        return None
+                arc_list.append((self.first_counter, arc))
+        return arc_list
 
     def solve(self, heuristic: callable = None) -> bool:
         """
@@ -39,18 +46,36 @@ class Game:
             agenda.put(arc)
         
         # Main algorithm loop
-        while True:
+        # Algorithm done if the queue (agenda) is empty
+        while not agenda.empty():
             # Get the next arc on the agenda
             _, arc = agenda.get()
 
-            # TODO AC-3
+            left_value = arc.left.get_value()
+            right_value = arc.right.get_value()
 
-            # Algorithm done if the queue (agenda) is empty
-            if agenda.empty():
-                break
-        
-        
-        
+            # Check if it is necessary
+            if left_value == 0:
+
+                # Check if right has a value
+                if right_value > 0:
+                    # Prune left
+                    revised = None
+                    try:
+                        before_len = arc.left.get_domain_size()
+                        arc.left.remove_from_domain(right_value)
+                        revised = before_len > arc.left.get_domain_size()
+                    except: pass
+
+                    # Add left back to the agenda through every right-side arc
+                    if revised:
+                        for new_arc in heuristic(arcs, arc.left):
+                            if not any(new_arc[1] == right for _, right in agenda.queue):
+                                agenda.put(new_arc)
+
+            elif left_value == right_value:
+                return False
+
         return True
 
 
@@ -85,3 +110,12 @@ class Game:
                         return False
                 
         return True
+
+class BacktrackingGame(Game):
+
+    def __init__(self, sudoku):
+        super().__init__(sudoku)
+    
+    def solve(self, heuristic = None):
+        # Will need to be replaced with backtracking
+        return super().solve(heuristic)

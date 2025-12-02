@@ -1,5 +1,5 @@
 import os
-from Game import Game
+from Game import Game, BacktrackingGame
 from Sudoku import Sudoku
 
 sudoku_folder = os.path.join(os.path.dirname(__file__), "Sudokus")
@@ -9,12 +9,13 @@ class App:
 
     @staticmethod
     def solve_sudoku(sudoku_file):
-        game = Game(Sudoku(sudoku_file))
+        game = BacktrackingGame(Sudoku(sudoku_file))
         game.show_sudoku()
         if (game.solve() and game.valid_solution()):
-            print("Solved!")
+            print("Solved!\nSolution:")
         else:
-            print("Could not solve this sudoku :(")
+            print("Could not solve this sudoku :(\nPartial Solution:")
+        game.show_sudoku()
 
 
     @staticmethod
