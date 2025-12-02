@@ -84,11 +84,11 @@ class Sudoku:
                     for j in range(sub_grid_origin_c, sub_grid_origin_c+3):
 
                         # Add all fields except for the field itself
-                        if i != row and j != column:
+                        if i != row or j != column:
                             neighbours.add(grid[i][j])
                 
                 # Save the neighbours
-                grid[i][j].set_neighbours(list(neighbours))
+                grid[row][column].set_neighbours(list(neighbours))
                 
 
     def board_to_string(self):
