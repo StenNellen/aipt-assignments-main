@@ -2,11 +2,12 @@ from Field import Field
 from Arc import Arc
 import Sudoku
 from queue import PriorityQueue
+from copy import deepcopy
 
 class Game:
 
     def __init__(self, sudoku):
-        self.sudoku = sudoku
+        self.sudoku: Sudoku = sudoku
 
     def show_sudoku(self):
         print(self.sudoku)
@@ -115,13 +116,21 @@ class BacktrackingGame(Game):
     def __init__(self, sudoku):
         super().__init__(sudoku)
     
+    def get_smallest_domains(self) -> list[Field]:
+        fields = []
+        for row in self.sudoku.get_board():
+            fields.extend([field for field in row])
+        return sorted([field for field in fields if len(field.domain)>1], key=lambda x: len(x.get_domain()))
+
+    
     def solve(self, heuristic = None):
         """
         Backtracking implementation of the AC-3 algorithm
         @return: true if the constraints can be satisfied, false otherwise
         """
         # Default heuristic
-        if heuristic == None: heuristic = self.heuristics_first
+        if heuristic == None: 
+            heuristic = self.heuristics_first
 
         # Define empty queue
         agenda = PriorityQueue()
@@ -131,6 +140,7 @@ class BacktrackingGame(Game):
         priority_arc_items = heuristic(arcs)
         for arc in priority_arc_items:
             agenda.put(arc)
+        
         
         # Main algorithm loop is done if the queue (agenda) is empty
         while not agenda.empty():
@@ -151,7 +161,8 @@ class BacktrackingGame(Game):
                         before_len = arc.left.get_domain_size()
                         arc.left.remove_from_domain(right_value)
                         revised = before_len > arc.left.get_domain_size()
-                    except: pass
+                    except: 
+                        pass
 
                     # Add left back to the agenda through every right-side arc if it was pruned
                     if revised:
@@ -161,8 +172,41 @@ class BacktrackingGame(Game):
 
             # Fail if both sides have the same value
             elif left_value == right_value:
-                break
+                return False
 
         
 
-        return True
+        # Check if valid solution was found deterministically
+        if self.valid_solution():
+            return True
+        
+        # Loop over all undetermined fields, ordered ascending by their domain size
+        for field in self.get_smallest_domains():
+
+            # Try every value for every undetermined field (DFS)
+            for value in field.get_domain():
+                
+                # Save a copy
+                save_state = deepcopy(self.sudoku)
+                field.set_value(value)
+                field.domain = [value]
+
+                self.show_sudoku()
+                print([field.domain for field in self.get_smallest_domains()])
+
+                self.solve()
+                
+                # Recursively solve and check if solved
+                if self.valid_solution():
+                    return True
+                
+                # Otherwise revert to current state
+                else:
+                    self.sudoku = save_state
+                
+                self.show_sudoku()
+                print([field.domain for field in self.get_smallest_domains()])
+                
+        # No solution found
+        return False
+    
