@@ -84,7 +84,7 @@ class Game:
         Get all constraint arcs in the sudoku
         @return: list of all arcs (tuples of Fields)
         """
-        grid: list[list[Field]] = self.sudoku.board
+        grid: list[list[Field]] = self.sudoku.get_board()
         arcs: list[Arc] = []
 
         for row in grid:
@@ -116,11 +116,12 @@ class BacktrackingGame(Game):
     def __init__(self, sudoku):
         super().__init__(sudoku)
     
-    def get_smallest_domains(self) -> list[Field]:
+    def get_smallest_domain(self) -> Field:
         fields = []
         for row in self.sudoku.get_board():
             fields.extend([field for field in row])
-        return sorted([field for field in fields if len(field.domain)>1], key=lambda x: len(x.get_domain()))
+        filtered_fields = [field for field in fields if len(field.get_domain()) > 1]
+        return min(filtered_fields, key=lambda x:len(x.get_domain()))                    
 
     
     def solve(self, heuristic = None):
@@ -128,84 +129,37 @@ class BacktrackingGame(Game):
         Backtracking implementation of the AC-3 algorithm
         @return: true if the constraints can be satisfied, false otherwise
         """
-        # Default heuristic
-        if heuristic == None: 
-            heuristic = self.heuristics_first
-
-        # Define empty queue
-        agenda = PriorityQueue()
-
-        # Get all arcs and fill the agenda
-        arcs: list[Arc] = self.get_constraint_arcs()
-        priority_arc_items = heuristic(arcs)
-        for arc in priority_arc_items:
-            agenda.put(arc)
-        
-        
-        # Main algorithm loop is done if the queue (agenda) is empty
-        while not agenda.empty():
-            # Get the next arc on the agenda
-            _, arc = agenda.get()
-            left_value = arc.left.get_value()
-            right_value = arc.right.get_value()
-
-            # Check if it is necessary
-            if left_value == 0:
-
-                # Check if right has a value
-                if right_value > 0:
-
-                    # Prune left
-                    revised = None
-                    try:
-                        before_len = arc.left.get_domain_size()
-                        arc.left.remove_from_domain(right_value)
-                        revised = before_len > arc.left.get_domain_size()
-                    except: 
-                        pass
-
-                    # Add left back to the agenda through every right-side arc if it was pruned
-                    if revised:
-                        for new_arc in heuristic(arcs, arc.left):
-                            if not any(new_arc[1] == right for _, right in agenda.queue):
-                                agenda.put(new_arc)
-
-            # Fail if both sides have the same value
-            elif left_value == right_value:
-                return False
-
-        
+        if not super().solve():
+            return False
 
         # Check if valid solution was found deterministically
         if self.valid_solution():
             return True
         
-        # Loop over all undetermined fields, ordered ascending by their domain size
-        for field in self.get_smallest_domains():
+        field = self.get_smallest_domain()
+            
+        # Try every value for the field (DFS)
+        for j in range(len(field.get_domain())):
 
-            # Try every value for every undetermined field (DFS)
-            for value in field.get_domain():
-                
-                # Save a copy
-                save_state = deepcopy(self.sudoku)
-                field.set_value(value)
-                field.domain = [value]
+            # Retrieve the chosen value
+            field = self.get_smallest_domain()
+            value = field.get_domain()[j]
 
-                self.show_sudoku()
-                print([field.domain for field in self.get_smallest_domains()])
+            # Save a copy
+            save_state = deepcopy(self.sudoku)
+            field.set_value(value)
+            field.domain = [value]
 
-                self.solve()
-                
-                # Recursively solve and check if solved
-                if self.valid_solution():
-                    return True
-                
-                # Otherwise revert to current state
-                else:
-                    self.sudoku = save_state
-                
-                self.show_sudoku()
-                print([field.domain for field in self.get_smallest_domains()])
+            # Attempt to solve the branch
+            self.solve()
+            
+            # Recursively solve and check if solved
+            if self.valid_solution():
+                return True
+            
+            # Otherwise revert to current state
+            else:
+                self.sudoku = save_state
                 
         # No solution found
         return False
