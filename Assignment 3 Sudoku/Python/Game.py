@@ -1,6 +1,7 @@
 from Field import Field
 from Arc import Arc
 import Sudoku
+from Heuristics import heuristics_first
 from queue import PriorityQueue
 from copy import deepcopy
 
@@ -8,46 +9,35 @@ class Game:
 
     def __init__(self, sudoku):
         self.sudoku: Sudoku = sudoku
+        self.first_counter = 0
 
     def show_sudoku(self):
         print(self.sudoku)
 
-    def heuristics_first(self, arcs: list[Arc], find: Field = None) -> list[tuple[int, Arc]] | tuple[int, Arc]:
-        """
-        Simple heuristic that prioritizes arcs based on the left field's number of possible values
-        @param arcs: list of arcs to prioritize
-        @param left: if provided, only return the next arc with this left field
-        @return: list of prioritized arcs or the next arc with the given left field
-        """
-        if find == None:
-            self.first_counter = len(arcs) - 1
-            return list(enumerate(arcs))
-        arc_list = []
-        for arc in arcs:
-            if arc.right == find:
-                self.first_counter += 1
-                arc_list.append((self.first_counter, arc))
-        return arc_list
-
-    def solve(self, heuristic: callable = None) -> bool:
+    def solve(self, heuristic: callable = None, metrics: dict = None) -> bool:
         """
         Implementation of the AC-3 algorithm
+        @param heuristic: Function to determine arc order
+        @param metrics: Dictionary to track performance counters
         @return: true if the constraints can be satisfied, false otherwise
         """
         # Default heuristic
-        if heuristic == None: heuristic = self.heuristics_first
+        if heuristic == None: heuristic = heuristics_first
 
         # Define empty queue
         agenda = PriorityQueue()
 
         # Get all arcs and fill the agenda
         arcs: list[Arc] = self.get_constraint_arcs()
-        priority_arc_items = heuristic(arcs)
+        priority_arc_items, self.first_counter = heuristic(arcs, first_counter = self.first_counter)
         for arc in priority_arc_items:
             agenda.put(arc)
         
         # Main algorithm loop is done if the queue (agenda) is empty
         while not agenda.empty():
+            # Increment total visits
+            if metrics is not None: metrics['visits'] += 1
+
             # Get the next arc on the agenda
             _, arc = agenda.get()
             left_value = arc.left.get_value()
@@ -67,15 +57,34 @@ class Game:
                         revised = before_len > arc.left.get_domain_size()
                     except: pass
 
-                    # Add left back to the agenda through every right-side arc if it was pruned
+                    # If there was pruning
                     if revised:
-                        for new_arc in heuristic(arcs, arc.left):
+                        # Increment succesful prunings
+                        if metrics is not None: metrics['pruned'] += 1
+
+                        # Add left back to the agenda through every right-side arc
+                        new_arcs, self.first_counter = heuristic(arcs, arc.left, first_counter = self.first_counter)
+                        for new_arc in new_arcs:
                             if not any(new_arc[1] == right for _, right in agenda.queue):
                                 agenda.put(new_arc)
+
+                                # Increment re-queued arcs
+                                if metrics is not None: metrics['requeued'] += 1
+                    else:
+                        # Increment useless checks (no revision made)
+                        if metrics is not None: metrics['useless'] += 1
+                else:
+                     # Increment useless checks (right side had no value)
+                     if metrics is not None: metrics['useless'] += 1
+
 
             # Fail if both sides have the same value
             elif left_value == right_value:
                 return False
+            
+            else:
+                # Increment useless checks (already satisfied or left already set)
+                if metrics is not None: metrics['useless'] += 1
 
         return True
 
@@ -122,14 +131,15 @@ class BacktrackingGame(Game):
             fields.extend([field for field in row])
         filtered_fields = [field for field in fields if len(field.get_domain()) > 1]
         return min(filtered_fields, key=lambda x:len(x.get_domain()))                    
-
     
-    def solve(self, heuristic = None):
+    def solve(self, heuristic = None, metrics: dict = None):
         """
         Backtracking implementation of the AC-3 algorithm
+        @param heuristic: Function to determine arc order
+        @param metrics: Dictionary to track performance counters
         @return: true if the constraints can be satisfied, false otherwise
         """
-        if not super().solve():
+        if not super().solve(heuristic, metrics):
             return False
 
         # Check if valid solution was found deterministically
@@ -151,7 +161,7 @@ class BacktrackingGame(Game):
             field.domain = [value]
 
             # Attempt to solve the branch
-            self.solve()
+            self.solve(heuristic, metrics)
             
             # Recursively solve and check if solved
             if self.valid_solution():
