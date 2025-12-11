@@ -1,7 +1,7 @@
 from Field import Field
 from Arc import Arc
 import Sudoku
-from Heuristics import heuristics_first, heuristics_somethingelse
+from Heuristics import heuristics_first
 from queue import PriorityQueue
 from copy import deepcopy
 
@@ -22,7 +22,7 @@ class Game:
         @return: true if the constraints can be satisfied, false otherwise
         """
         # Default heuristic
-        if heuristic == None: heuristic = heuristics_somethingelse
+        if heuristic == None: heuristic = heuristics_first
 
         # Define empty queue
         agenda = PriorityQueue()

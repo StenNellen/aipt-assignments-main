@@ -1,10 +1,7 @@
 from Arc import Arc
 from Field import Field
 
-def has_empty_domain(arc) -> bool:
-    return arc.left.value != 0
-
-def heuristics_first(arcs: list[Arc], find: Field = None, first_counter: int = 0) -> tuple[list[tuple[int, Arc]], int] | tuple[tuple[int, Arc], int]:
+def heuristics_first(arcs: list[Arc], find: Field = None, first_counter: int = 0) -> list[tuple[int, Arc]] | tuple[int, Arc]:
     """
     Simple heuristic that prioritizes arcs based on the left field's number of possible values
     @param arcs: list of arcs to prioritize
@@ -13,18 +10,16 @@ def heuristics_first(arcs: list[Arc], find: Field = None, first_counter: int = 0
     @return: (list of prioritized arcs, new_counter_value)
     """
     if find == None:
-        res_arcs = list(filter(has_empty_domain, arcs))
-        first_counter = len(res_arcs) - 1
-
-        return list(enumerate(res_arcs)), first_counter
+        first_counter = len(arcs) - 1
+        return list(enumerate(arcs)), first_counter
     arc_list = []
     for arc in arcs:
-        if arc.right == find and arc.left.value != 0:
+        if arc.right == find:
             first_counter += 1
             arc_list.append((first_counter, arc))
     return arc_list, first_counter
 
-def heuristics_somethingelse(arcs: list[Arc], find: Field = None, first_counter: int = 0) -> tuple[list[tuple[int, Arc]], int]:
+def heuristics_somethingelse(arcs: list[Arc], find: Field = None, first_counter: int = 0) -> list[tuple[int, Arc]] | tuple[int, Arc]:
     """
     Description
     @param arcs: list of arcs to prioritize
@@ -33,21 +28,4 @@ def heuristics_somethingelse(arcs: list[Arc], find: Field = None, first_counter:
     @return: (list of prioritized arcs, new_counter_value)
     """
     # Moet first_counter gebruiken als tiebreaker (incrementen in de code en returnen)
-    if find == None:
-        res_arcs: list[Arc] = list(filter(has_empty_domain, arcs))
-        first_counter = len(res_arcs) - 1
-        tuple_list = []
-        for i in range(len(res_arcs)):
-            tuple_list.append(((len(res_arcs[i].left.domain), i), res_arcs[i]))
-            
-        return tuple_list, first_counter
-    
-    arc_list = []
-    priority_arcs = sorted(arcs, key=lambda arc: len(arc.left.domain))
-
-    for arc in priority_arcs:
-        if arc.right == find and arc.left.value != 0:
-            first_counter += 1
-            arc_list.append(((len(arc.left.domain), first_counter), arc))
-
-    return arc_list, first_counter
+    return (("priority", first_counter), "arc"), first_counter
