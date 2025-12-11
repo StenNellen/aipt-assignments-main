@@ -110,10 +110,15 @@ class Game:
         """
         grid: list[list[Field]] = self.sudoku.board
 
+        # Check every field
         for row in grid:
             for field in row:
+                
+                # Check if the field is filled out
                 if not field.is_finalized():
                     return False
+                
+                # Check if the constraints are satisfied
                 for neighbour in field.neighbours:
                     if field.value == neighbour.value:
                         return False
