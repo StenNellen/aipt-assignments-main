@@ -21,7 +21,7 @@ class App:
     @staticmethod
     def start():
         while True:
-            file_num = input("Enter Sudoku file (1-6): ")
+            file_num = input("Enter Sudoku file (1-7): ")
             print("\n")
 
             file = None
