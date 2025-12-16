@@ -2,11 +2,14 @@ import os
 import statistics
 from Sudoku import Sudoku
 from Game import BacktrackingGame
-from Heuristics import heuristics_first
+from Heuristics import heuristics_first, heuristics_smallestdomain, heuristics_largestdomain, heuristic_lowestfirstdomainfield
 
 # Define Heuristics List
 heuristics_to_test = [
     ("First In First Out", heuristics_first),
+    ("Smallest Domain Size", heuristics_smallestdomain),
+    ("Largest Domain Size", heuristics_largestdomain),
+    ("Lowest First Domain Field Value", heuristic_lowestfirstdomainfield)
 ]
 
 def run_evaluation():
@@ -14,7 +17,7 @@ def run_evaluation():
     
     # Dictionary to collect data
     summary_data = {
-        name: {'visits': [], 'pruned': [], 'useless': [], 'requeued': [], 'efficiency': []} 
+        name: {'visits': [], 'pruned': [], 'useless': [], 're-queued': [], 'efficiency': []}
         for name, _ in heuristics_to_test
     }
 
@@ -42,7 +45,7 @@ def run_evaluation():
                 continue
 
             # Initialize metrics
-            metrics = {'visits': 0, 'pruned': 0, 'useless': 0, 'requeued': 0}
+            metrics = {'visits': 0, 'pruned': 0, 'useless': 0, 're-queued': 0}
 
             # Solve the sudoku with the heuristic
             try:
@@ -59,11 +62,11 @@ def run_evaluation():
             summary_data[name]['visits'].append(total_visits)
             summary_data[name]['pruned'].append(pruned)
             summary_data[name]['useless'].append(metrics['useless'])
-            summary_data[name]['requeued'].append(metrics['requeued'])
+            summary_data[name]['re-queued'].append(metrics['re-queued'])
             summary_data[name]['efficiency'].append(efficiency)
 
             # Print the detailed table row
-            print(f"{filename:<15} | {name:<25} | {metrics['visits']:<10} | {metrics['pruned']:<10} | {metrics['useless']:<10} | {metrics['requeued']:<10} | {efficiency:<12.2f}")
+            print(f"{filename:<15} | {name:<25} | {metrics['visits']:<10} | {metrics['pruned']:<10} | {metrics['useless']:<10} | {metrics['re-queued']:<10} | {efficiency:<12.2f}")
 
     # End of table
     print("-" * 115)
@@ -92,7 +95,7 @@ def run_evaluation():
         row_str = f"{name:<{w_name}}"
         
         # Order of columns to match header
-        order = ['visits', 'pruned', 'useless', 'requeued', 'efficiency']
+        order = ['visits', 'pruned', 'useless', 're-queued', 'efficiency']
         
         # Create the metrics row string
         for metric in order:

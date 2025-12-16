@@ -22,7 +22,7 @@ class Game:
         @return: true if the constraints can be satisfied, false otherwise
         """
         # Default heuristic
-        if heuristic == None: heuristic = heuristics_smallestdomain
+        if heuristic == None: heuristic = heuristics_first
 
         # Define empty queue
         agenda = PriorityQueue()

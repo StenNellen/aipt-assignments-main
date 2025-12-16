@@ -70,7 +70,7 @@ def heuristics_largestdomain(arcs: list[Arc], find: Field = None, first_counter:
     @param first_counter: the current state of the counter from the Game
     @return: (list of prioritized arcs, new_counter_value)
     """
-    sorted_arcs = sorted(arcs, key=lambda sort_arc: len(sort_arc.right.get_domain()), reverse=False)
+    sorted_arcs = sorted(arcs, key=lambda sort_arc: len(sort_arc.right.get_domain()), reverse=True)
     arc_list, first_counter = heuristic_helper(arcs, find, sorted_arcs, first_counter)
     return arc_list, first_counter
 
@@ -90,18 +90,13 @@ def heuristic_lowestfirstdomainfield(arcs: list[Arc], find: Field = None, first_
 
     arc_list = []
     sorted_arcs = sorted(arcs, key=sort_helper)
-    if find is None:
-        first_counter = len(arcs) - 1
-        for arc in sorted_arcs:
-            first_counter += 1
-            # first counter is appended as a tiebreaker, for when two items have the same domain length
-            if len(arc.right.get_domain()) != 0:
-                arc_list.append(((arc.right.get_domain()[0], first_counter), arc))
-        return arc_list, first_counter
-
     for arc in sorted_arcs:
-        if arc.right == find:
-            first_counter += 1
-            if len(arc.right.get_domain()) != 0:
-                arc_list.append(((arc.right.get_domain()[0], first_counter), arc))
+        if find is not None and arc.right != find:
+            continue
+
+        if not arc.right.get_domain():
+            continue
+
+        first_counter += 1
+        arc_list.append(((arc.right.get_domain()[0], first_counter), arc))
     return arc_list, first_counter
