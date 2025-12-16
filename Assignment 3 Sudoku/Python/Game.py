@@ -1,7 +1,7 @@
 from Field import Field
 from Arc import Arc
 import Sudoku
-from Heuristics import heuristics_first
+from Heuristics import heuristics_first, heuristics_smallestdomain, heuristic_finilizedfield
 from queue import PriorityQueue
 from copy import deepcopy
 
@@ -22,7 +22,7 @@ class Game:
         @return: true if the constraints can be satisfied, false otherwise
         """
         # Default heuristic
-        if heuristic == None: heuristic = heuristics_first
+        if heuristic == None: heuristic = heuristic_finilizedfield
 
         # Define empty queue
         agenda = PriorityQueue()
@@ -32,7 +32,7 @@ class Game:
         priority_arc_items, self.first_counter = heuristic(arcs, first_counter = self.first_counter)
         for arc in priority_arc_items:
             agenda.put(arc)
-        
+        print(agenda.queue)
         # Main algorithm loop is done if the queue (agenda) is empty
         while not agenda.empty():
             # Increment total visits
@@ -59,17 +59,17 @@ class Game:
 
                     # If there was pruning
                     if revised:
-                        # Increment succesful prunings
+                        # Increment successful pruning
                         if metrics is not None: metrics['pruned'] += 1
 
                         # Add left back to the agenda through every right-side arc
                         new_arcs, self.first_counter = heuristic(arcs, arc.left, first_counter = self.first_counter)
                         for new_arc in new_arcs:
-                            if not any(new_arc[1] == right for _, right in agenda.queue):
+                            if not any(new_arc[1] == right for _, right in agenda.queue) and new_arc[1].left != arc.right:
                                 agenda.put(new_arc)
 
                                 # Increment re-queued arcs
-                                if metrics is not None: metrics['requeued'] += 1
+                                if metrics is not None: metrics['re-queued'] += 1
                     else:
                         # Increment useless checks (no revision made)
                         if metrics is not None: metrics['useless'] += 1
