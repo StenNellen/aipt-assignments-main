@@ -1,7 +1,7 @@
 from Field import Field
 from Arc import Arc
 import Sudoku
-from Heuristics import heuristics_first, heuristics_smallestdomain, heuristic_finilizedfield
+from Heuristics import heuristics_first, heuristics_smallestdomain, heuristics_largestdomain, heuristic_lowestfirstdomainfield
 from queue import PriorityQueue
 from copy import deepcopy
 
@@ -22,7 +22,7 @@ class Game:
         @return: true if the constraints can be satisfied, false otherwise
         """
         # Default heuristic
-        if heuristic == None: heuristic = heuristic_finilizedfield
+        if heuristic == None: heuristic = heuristics_smallestdomain
 
         # Define empty queue
         agenda = PriorityQueue()
@@ -32,7 +32,6 @@ class Game:
         priority_arc_items, self.first_counter = heuristic(arcs, first_counter = self.first_counter)
         for arc in priority_arc_items:
             agenda.put(arc)
-        print(agenda.queue)
         # Main algorithm loop is done if the queue (agenda) is empty
         while not agenda.empty():
             # Increment total visits
