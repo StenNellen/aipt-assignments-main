@@ -9,7 +9,7 @@ heuristics_to_test = [
     ("First In First Out", heuristics_first),
     ("Smallest Domain Size", heuristics_smallestdomain),
     ("Largest Domain Size", heuristics_largestdomain),
-    ("Lowest First Domain Field Value", heuristic_lowestfirstdomainfield)
+    ("First Domain Field Value", heuristic_lowestfirstdomainfield)
 ]
 
 def run_evaluation():
