@@ -3,30 +3,32 @@ from typing import Any
 from Arc import Arc
 from Field import Field
 
-def heuristic_helper(arcs, find, sorted_arcs, first_counter: int = 0) -> tuple[list[Any], int]:
+def heuristic_helper(arcs, find, reverse: bool, first_counter: int = 0) -> tuple[list[Any], int]:
     """"
     A helper function that does the repeatable code in all the heuristics
     @param arcs: list of arcs to prioritize
     @param find: if provided, only return the next arc with this right field
-    @param sorted_arcs: list of arcs to prioritize
+    @param reverse: true if longest, false if shortest
     @param first_counter: the current state of the counter from the Game
     @return: (list of prioritized arcs, new_counter_value)
     """
     arc_list = []
     if find is None:
         first_counter = len(arcs) - 1
-        for arc in sorted_arcs:
+        for arc in arcs:
             first_counter += 1
             domain_len = len(arc.right.get_domain())
             # first counter is appended as a tiebreaker, for when two items have the same domain length
-            arc_list.append(((domain_len, first_counter), arc))
+            if reverse: arc_list.append(((10 - domain_len, first_counter), arc))
+            else: arc_list.append(((domain_len, first_counter), arc))
         return arc_list, first_counter
 
-    for arc in sorted_arcs:
+    for arc in arcs:
         if arc.right == find:
             first_counter += 1
             domain_len = len(arc.right.get_domain())
-            arc_list.append(((domain_len, first_counter), arc))
+            if reverse: arc_list.append(((10 - domain_len, first_counter), arc))
+            else: arc_list.append(((domain_len, first_counter), arc))
     return arc_list, first_counter
 
 def heuristics_first(arcs: list[Arc], find: Field = None, first_counter: int = 0) -> tuple[list[Any], int]:
@@ -57,8 +59,7 @@ def heuristics_smallestdomain(arcs: list[Arc], find: Field = None, first_counter
     @param first_counter: the current state of the counter from the Game
     @return: (list of prioritized arcs, new_counter_value)
     """
-    sorted_arcs = sorted(arcs, key=lambda sort_arc: len(sort_arc.right.get_domain()))
-    arc_list, first_counter = heuristic_helper(arcs, find, sorted_arcs, first_counter)
+    arc_list, first_counter = heuristic_helper(arcs, find, False, first_counter)
     return arc_list, first_counter
 
 def heuristics_largestdomain(arcs: list[Arc], find: Field = None, first_counter: int = 0) -> tuple[
@@ -70,8 +71,7 @@ def heuristics_largestdomain(arcs: list[Arc], find: Field = None, first_counter:
     @param first_counter: the current state of the counter from the Game
     @return: (list of prioritized arcs, new_counter_value)
     """
-    sorted_arcs = sorted(arcs, key=lambda sort_arc: len(sort_arc.right.get_domain()), reverse=True)
-    arc_list, first_counter = heuristic_helper(arcs, find, sorted_arcs, first_counter)
+    arc_list, first_counter = heuristic_helper(arcs, find, True, first_counter)
     return arc_list, first_counter
 
 def heuristic_lowestfirstdomainfield(arcs: list[Arc], find: Field = None, first_counter: int = 0):
