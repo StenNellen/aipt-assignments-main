@@ -4,7 +4,7 @@ from Sudoku import Sudoku
 from Game import BacktrackingGame
 from Heuristics import heuristics_first, heuristics_smallestdomain, heuristics_largestdomain, heuristic_lowestfirstdomainfield
 
-# Define Heuristics List
+# Define Heuristics List, used for looping through later
 heuristics_to_test = [
     ("First In First Out", heuristics_first),
     ("Smallest Domain Size", heuristics_smallestdomain),
@@ -15,7 +15,7 @@ heuristics_to_test = [
 def run_evaluation():
     folder = "Sudokus"
     
-    # Dictionary to collect data
+    # Dictionary to collect data, to keep track of labeled categories of data.
     summary_data = {
         name: {'visits': [], 'pruned': [], 'useless': [], 're-queued': [], 'efficiency': []}
         for name, _ in heuristics_to_test
@@ -25,7 +25,7 @@ def run_evaluation():
     print(f"{'Sudoku File':<15} | {'Heuristic Name':<25} | {'Visits':<10} | {'Pruned':<10} | {'Useless':<10} | {'Re-queued':<10} | {'Efficiency %':<12}")
     print("-" * 115)
 
-    # Perform evaluation on all sudokus
+    # Perform evaluation on all sudokus, this loops through sudoku 1 to 5
     for i in range(1, 6):
         filename = f"Sudoku{i}.txt"
         filepath = os.path.join(folder, filename)
@@ -38,7 +38,9 @@ def run_evaluation():
         # Perform evaluation on all heuristics
         for name, heuristic_func in heuristics_to_test:
             try:
+                # setup the sudoku file
                 s = Sudoku(filepath)
+                # Create an instance of the game class with the sudoku
                 game = BacktrackingGame(s)
             except Exception as e:
                 print(f"{filename:<15} | Error loading Sudoku: {e}")
@@ -47,16 +49,18 @@ def run_evaluation():
             # Initialize metrics
             metrics = {'visits': 0, 'pruned': 0, 'useless': 0, 're-queued': 0}
 
-            # Solve the sudoku with the heuristic
+            # Solve the sudoku with the selected heuristic
             try:
                 success = game.solve(heuristic_func, metrics)
             except Exception as e:
                 print(f"{filename:<15} | {name:<25} | Error: {e}")
                 continue
 
-            total_visits = metrics['visits']
-            pruned = metrics['pruned']
-            efficiency = (pruned / total_visits * 100) if total_visits > 0 else 0.0
+            total_visits = metrics['visits'] # The total number of arc-processing iterations.
+            pruned = metrics['pruned'] # The number of times constraints reduced a domain.
+            # Re-queued - The number of arcs added back to the agenda after a domain reduction.
+            # Useless - The number of checks where the arc was consistent and no changes were made.
+            efficiency = (pruned / total_visits * 100) if total_visits > 0 else 0.0 # The ratio of successful prunings to total visits.
 
             # Collect data
             summary_data[name]['visits'].append(total_visits)
@@ -103,12 +107,12 @@ def run_evaluation():
             if not values:
                 row_str += f" | {'-':<{w_metric}}"
                 continue
-
-            avg = statistics.mean(values)
+            # Data saved as: Average [min, max]
+            avg = statistics.mean(values) 
             minimum = min(values)
             maximum = max(values)
             
-            if metric == 'efficiency':
+            if metric == 'efficiency': # Efficiency is a fraction, thus rounded to 1 decimal for min/max
                 cell = f"{avg:.2f} [{minimum:.1f}-{maximum:.1f}]"
             else:
                 cell = f"{int(avg)} [{minimum}-{maximum}]"
